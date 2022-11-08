@@ -2,7 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocationAlwaysUsageDescription</key>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Cho nhìn cái thư viện ảnh một cái nhá</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Xin quyền nhìn trộmcái</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Xin cái quyền đê</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Xin cái quyền đê</string>

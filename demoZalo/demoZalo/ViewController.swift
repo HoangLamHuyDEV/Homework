@@ -14,6 +14,7 @@ import CoreLocation
 class ViewController: MessagesViewController, MessagesDataSource, MessagesDisplayDelegate, MessagesLayoutDelegate, InputBarAccessoryViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate{
     
     let locationMangger = CLLocationManager()
+    var currentLocation: CLLocation?
     
     var isFisrtUser: Bool = true
     
@@ -55,11 +56,18 @@ class ViewController: MessagesViewController, MessagesDataSource, MessagesDispla
     
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
         
-        let tempMessage = ChatMessage(sender: currentSender, messageId: "1", sentDate: .now, kind: .text(inputBar.inputTextView.text))
-        messages.append(tempMessage)
-        inputBar.inputTextView.text = ""
-        messagesCollectionView.reloadData()
-        
+        if inputBar.inputTextView.text == "@location" {
+            let tempMessage = ChatMessage(sender: currentSender, messageId: "1", sentDate: .now, kind: .location(Location(location: currentLocation!, size: CGSize(width: 200, height: 150))))
+            messages.append(tempMessage)
+            inputBar.inputTextView.text = ""
+            messagesCollectionView.reloadData()
+        } else{
+            
+            let tempMessage = ChatMessage(sender: currentSender, messageId: "1", sentDate: .now, kind: .text(inputBar.inputTextView.text))
+            messages.append(tempMessage)
+            inputBar.inputTextView.text = ""
+            messagesCollectionView.reloadData()
+        }
     }
     
 //    func inputBar(_ inputBar: InputBarAccessoryView, didChangeIntrinsicContentTo size: CGSize) {
@@ -105,6 +113,18 @@ class ViewController: MessagesViewController, MessagesDataSource, MessagesDispla
             navigationItem.title = currentSender.displayName
             messagesCollectionView.reloadData()
         }
+    }
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        currentLocation = locations.last
     }
 }
 
