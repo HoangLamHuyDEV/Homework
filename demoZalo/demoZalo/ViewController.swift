@@ -11,7 +11,9 @@ import InputBarAccessoryView
 import Firebase
 import CoreLocation
 
-class ViewController: MessagesViewController, MessagesDataSource, MessagesDisplayDelegate, MessagesLayoutDelegate, InputBarAccessoryViewDelegate {
+class ViewController: MessagesViewController, MessagesDataSource, MessagesDisplayDelegate, MessagesLayoutDelegate, InputBarAccessoryViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, CLLocationManagerDelegate{
+    
+    let locationMangger = CLLocationManager()
     
     var isFisrtUser: Bool = true
     
@@ -22,11 +24,16 @@ class ViewController: MessagesViewController, MessagesDataSource, MessagesDispla
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        locationMangger.delegate = self
         navigationItem.title = currentSender.displayName
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesDisplayDelegate = self
         messagesCollectionView.messagesLayoutDelegate = self
         messageInputBar.delegate = self
+        locationMangger.distanceFilter = 15
+        locationMangger.desiredAccuracy = kCLLocationAccuracyBest
+        locationMangger.requestAlwaysAuthorization()
+        locationMangger.startUpdatingLocation()
        
         
     }
@@ -72,9 +79,19 @@ class ViewController: MessagesViewController, MessagesDataSource, MessagesDispla
     
 
     @IBAction func btnPicturePress(_ sender: UIButton) {
-        let tempMessage = ChatMessage(sender: currentSender, messageId: "1", sentDate: .now, kind: .photo(Media(placeholderImage: UIImage(named: "Pic1")!, size: CGSize(width: 200, height: 100))))
+        let imagePickerVC = UIImagePickerController()
+        imagePickerVC.sourceType = .photoLibrary
+        imagePickerVC.delegate = self
+        present(imagePickerVC, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+        if let image = info[.originalImage] as? UIImage {
+        let tempMessage = ChatMessage(sender: currentSender, messageId: "1", sentDate: .now, kind: .photo(Media(placeholderImage: image, size: CGSize(width: 200, height: 150))))
         messages.append(tempMessage)
         messagesCollectionView.reloadData()
+        }
     }
     
     @IBAction func btnSwitchUserPress(_ sender: UIButton) {
